@@ -7,8 +7,11 @@ def calculate_differences(report):
     return [next_level - current_level for current_level, next_level in zip(report, report[1:])]
 
 def check_rules(trend, differences):
-    return True if trend == 'decreasing' and all(-4 < difference < 0 for difference in differences) or \
-                   trend == 'increasing' and all( 0 < difference < 4 for difference in differences) else False
+    return trend == 'decreasing' and all(-4 < difference < 0 for difference in differences) or \
+           trend == 'increasing' and all( 0 < difference < 4 for difference in differences)
+
+def bad_level_check(trend, difference):
+    return trend == 'decreasing' and not -4 < difference < 0 or trend == 'increasing' and not 0 < difference < 4
 
 reports = [list(map(int, line.split())) for line in input_lines]
 
@@ -20,14 +23,10 @@ for report in reports:
     if check_rules(trend, differences):
         reports_safe += 1
         continue
-    report_copy = [level for level in report]
-    for idx, difference in enumerate(differences):
-        if trend == 'decreasing' and not -4 < difference < 0 or trend == 'increasing' and not 0 < difference < 4:
-            report.pop(idx)
-            report_copy.pop(idx + 1)
-            break
-    if check_rules(trend, calculate_differences(report)) or check_rules(trend, calculate_differences(report_copy)):
-        reports_with_a_single_bad_level += 1
+    bad_level_index = next(idx for idx, difference in enumerate(differences) if bad_level_check(trend, difference))
+    if  check_rules(trend, calculate_differences(report[:bad_level_index]     + report[bad_level_index + 1:])) or \
+        check_rules(trend, calculate_differences(report[:bad_level_index + 1] + report[bad_level_index + 2:])):
+            reports_with_a_single_bad_level += 1
 
 # Part 1
 
