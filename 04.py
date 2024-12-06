@@ -36,5 +36,3 @@ for y, line in enumerate(puzzle[1:-1], 1):
                 if ''.join(sorted(puzzle[y-1][x+1] + puzzle[y+1][x-1])) == 'MS':
                     counter += 1
 print(counter)
-
-
