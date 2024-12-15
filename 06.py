@@ -5,6 +5,12 @@ with open('./06.txt') as my_input:
 
 area = [[column for column in row] for row in area]
 
+def get_position_and_heading(area):
+    for y, row in enumerate(area):
+        for x, column in enumerate(row):
+            if column != '.' and column != '#':
+                return (y, x), column
+
 def in_area(y, x, area):
     return y >= 0 and x >= 0 and y < len(area) and x < len(area)
 
@@ -58,11 +64,7 @@ def get_path(position , heading, area):
             else:
                 heading = '>'
 
-for y, row in enumerate(area):
-    for x, column in enumerate(row):
-        if column != '.' and column != '#':
-            position = (y, x)
-            heading = column
+position, heading = get_position_and_heading(area)
 
 path = get_path(position, heading, area)
 
